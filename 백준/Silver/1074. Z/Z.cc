@@ -1,26 +1,29 @@
 #include <iostream>
 using namespace std;
 
-int Z(int n, int row, int col, int count);
+int Z(int n, int row, int col){
 
-int main() {
-    int count = 0;
-    int n, row, col;
-    cin >> n >> row >> col;
-    cout << Z(1 << n, row, col, count); // 2의 거듭제곱으로 변환
+    if (n == 0) return 0;
+
+    int center = 1 << (n - 1);
+
+    if (row < center && col < center) {
+        return Z(n - 1, row, col);
+    }
+    else if (row < center && col >= center) {
+        return center * center + Z(n - 1, row, col - center);
+    }
+    else if (row >= center && col < center) {
+        return 2 * center * center + Z(n - 1, row - center, col);
+    }
+    else {
+        return 3 * center * center + Z(n - 1, row - center, col - center);
+    }
 }
 
-int Z(int n, int row, int col, int count) {
-    if (n == 1) return count; // 기저 조건
-
-    int half = n / 2;
-    if (row < half && col < half) {
-        return Z(half, row, col, count); // 좌상단 영역
-    } else if (row < half && col >= half) {
-        return Z(half, row, col - half, count + half * half); // 우상단 영역
-    } else if (row >= half && col < half) {
-        return Z(half, row - half, col, count + 2 * half * half); // 좌하단 영역
-    } else {
-        return Z(half, row - half, col - half, count + 3 * half * half); // 우하단 영역
-    }
+int main() {
+    int n, row, col;
+    cin >> n >> row >> col;
+    cout << Z(n, row, col) << endl;
+    return 0;
 }
